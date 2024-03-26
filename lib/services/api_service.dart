@@ -1,17 +1,25 @@
-class APIService {
- static Future<String> summarizeText(String text) async {
-    var response = await http.post(
-      Uri.parse('YOUR_SUMMARIZATION_API_ENDPOINT'),
-      body: {'text': text},
-    );
-    return response.body;
-  }
+import "dart:convert";
 
+import "package:dio/dio.dart";
+
+class APIService {
   static Future<String> generateImage(String text) async {
-    var response = await http.post(
-      Uri.parse('YOUR_IMAGE_GENERATION_API_ENDPOINT'),
-      body: {'text': text},
-    );
-    return response.body;
+    var summarizedText;
+    var imageBase64;
+    try {
+      
+      Response response = await Dio().get(
+        'URLHERE',
+        queryParameters: {'prompt': text},
+      );
+
+      Map<String, dynamic> data = json.decode(response.data);
+      summarizedText = data['summarized_text'];
+      imageBase64 = data['image'];
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+
+    return "";
   }
 }

@@ -4,16 +4,15 @@ import 'package:flutter_application_2/models/ChunkModel.dart';
 import 'package:flutter_application_2/pages/pdf_screen/pdf_screen.dart';
 import 'package:provider/provider.dart';
 
-class ReadingPage extends StatefulWidget {
-  const ReadingPage({super.key, required this.title});
+class ReadingPage2 extends StatefulWidget {
+  const ReadingPage2({super.key, required this.title});
 
   final String title;
-
   @override
-  State<ReadingPage> createState() => _ReadingPageState();
+  State<ReadingPage2> createState() => _ReadingPage2State();
 }
 
-class _ReadingPageState extends State<ReadingPage> {
+class _ReadingPage2State extends State<ReadingPage2> {
   int _counter = 0;
   String currentWord = "";
   Timer? _timer;
@@ -22,37 +21,36 @@ class _ReadingPageState extends State<ReadingPage> {
   @override
   void initState() {
     super.initState();
-    _startReading(context);
+    //_startReading(context);
   }
-  void _startReading(BuildContext context) {
+
+  void _stopReading(BuildContext context) {
     setState(() {
-      final chunkModel = context.read<ChunkModel>();
-      List<String> words = chunkModel.getText.split(' ');
-      print(words);
-      if (_isRunning) {
-        // if it runs (True) and you press stop
-        _timer?.cancel();
-        _isRunning = false;
-      } 
-      else {
-        _timer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
-          
-          setState(() {
-            if (_counter >= words.length) {
-              _counter = 0;
-              chunkModel.changeText();
-              _dontShowImage = false;
-              _isRunning=!_isRunning;
-              //_startReading(context);
-            }
+      _timer?.cancel();
+      _isRunning = false;
+    });
+  }
 
-            currentWord = words[_counter];
-            _counter++;
-          });
-        });
-        //_isRunning = true;
-      }
+  void _startReading(BuildContext context) {
+    final chunkModel = context.read<ChunkModel>();
+    List<String> words = chunkModel.getText.split(' ');
+    print("words+${words}");
+    print(words.length);
 
+    _timer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
+      setState(() {
+        if (_counter >= words.length) {
+          _dontShowImage = false;
+          _counter = 0;
+          currentWord="";
+          _stopReading(context);
+          chunkModel.changeText();
+        } else {
+          _isRunning =true;
+          currentWord = words[_counter];
+          _counter++;
+        }
+      });
     });
   }
 
@@ -64,15 +62,16 @@ class _ReadingPageState extends State<ReadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _dontShowImage ? Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        title: Text(widget.title,
-            style: Theme.of(context).textTheme.displayMedium),
-        actions: [Switch(value: false, onChanged: (newValue) {})],
-      ),
+    return _dontShowImage
+        ? Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              title: Text(widget.title,
+                  style: Theme.of(context).textTheme.displayMedium),
+              actions: [Switch(value: false, onChanged: (newValue) {})],
+            ),
 
-      body: Stack(
+            body: Stack(
               children: [
                 Positioned(
                   top: 20.0,
@@ -117,31 +116,30 @@ class _ReadingPageState extends State<ReadingPage> {
               ],
             ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _startReading(context);
-        },
-        tooltip: 'Start/Pause',
-        child:
-            _isRunning ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
-      ),
-      // This trailing comma makes auto-formatting nicer for build methods.
-    ) 
-             :  GestureDetector(
-              onTap: () {
-                dontShowImage();
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                _isRunning ? _stopReading(context) : _startReading(context);
               },
-              child: Image.network('https://picsum.photos/250?image=9'),
-            )
-    
-    ;
+              tooltip: 'Start/Pause',
+              child: _isRunning
+                  ? const Icon(Icons.pause)
+                  : const Icon(Icons.play_arrow),
+            ),
+            // This trailing comma makes auto-formatting nicer for build methods.
+          )
+        : GestureDetector(
+            onTap: () {
+              dontShowImage(context);
+            },
+            child: Image.network('https://picsum.photos/250?image=9'),
+          );
   }
-  
-  void dontShowImage() {
 
+  void dontShowImage(BuildContext context) {
     setState(() {
       _dontShowImage = !_dontShowImage;
-      _isRunning =!_isRunning;
+      _isRunning = !_isRunning;
+      _startReading(context);
     });
   }
 }

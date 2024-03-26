@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_2/models/ChunkModel.dart';
 import 'package:flutter_application_2/pages/reading/widgets/reading_page.dart';
+import 'package:flutter_application_2/pages/reading/widgets/reading_page2.dart';
 import 'package:flutter_application_2/utils/helper_widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,7 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
 /*
     Future<File> fromAsset(String asset, String filename) async {
     Completer<File> completer = Completer();
@@ -67,11 +69,19 @@ class _HomePageState extends State<HomePage> {
           children: [
             ElevatedButton(
               onPressed: () async {
-                await _extractTextFromPDF("ASD").then((value) => Navigator.push(
+                await _extractTextFromPDF("ASD").then((value) {
+                  final chunkModel = ChunkModel(allPdfText: value);
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            ReadingPage(title: "Speed Reader", text: value))));
+                      builder: (context) => ChangeNotifierProvider(
+                        create: (context) => chunkModel,
+                        child: const ReadingPage2(
+                            title: "Speed Reader"), // Removed const here
+                      ),
+                    ),
+                  );
+                });
               },
               child: const Text('Import PDF'),
             ),
@@ -82,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            ReadingPage(title: "Speed Reader", text: value))));
+                            const ReadingPage(title: "Speed Reader"))));
               },
               child: const Text('Read Daily News'),
             ),
@@ -93,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            ReadingPage(title: "Speed Reader", text: value))));
+                            const ReadingPage(title: "Speed Reader"))));
               },
               child: const Text('Read Saved Books'),
             ),
@@ -104,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            ReadingPage(title: "Speed Reader", text: value))));
+                            const ReadingPage(title: "Speed Reader"))));
               },
               child: const Text('Read text'),
             )
