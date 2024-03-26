@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/services/api_service.dart';
 
 class ChunkModel extends ChangeNotifier {
 
   List<String> allPdfText;
   late List<String> textChunks;
-  late String imagePath;
-  int chunkSize = 50;
+  late Image image;
+  int chunkSize = 200;
   int currentPosition = 0;
 
+  Image get getImage => image;
   String get getText => textChunks[currentPosition];
 
   ChunkModel( {required this.allPdfText}) {
@@ -24,6 +28,7 @@ class ChunkModel extends ChangeNotifier {
       textChunks.add(chunk);
     }
     print(textChunks.first);
+    changeImage();
   }
 
   void changeText() {
@@ -34,5 +39,11 @@ class ChunkModel extends ChangeNotifier {
       // ignore: avoid_print
       print('No more chunks available.');
     }
+    changeImage();
+  }
+  void changeImage() async{
+    var base64image = await APIService.generateImage(textChunks[currentPosition]);
+    image = Image.memory(base64Decode(base64image));
+    notifyListeners();
   }
 }

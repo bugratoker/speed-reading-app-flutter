@@ -18,6 +18,7 @@ class _ReadingPage2State extends State<ReadingPage2> {
   Timer? _timer;
   bool _isRunning = false;
   bool _dontShowImage = true;
+  final int _miliseconds =300;
   @override
   void initState() {
     super.initState();
@@ -37,7 +38,7 @@ class _ReadingPage2State extends State<ReadingPage2> {
     print("words+${words}");
     print(words.length);
 
-    _timer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: _miliseconds), (timer) {
       setState(() {
         if (_counter >= words.length) {
           _dontShowImage = false;
@@ -131,7 +132,7 @@ class _ReadingPage2State extends State<ReadingPage2> {
             onTap: () {
               dontShowImage(context);
             },
-            child: Image.network('https://picsum.photos/250?image=9'),
+            child: context.read<ChunkModel>().getImage,
           );
   }
 
