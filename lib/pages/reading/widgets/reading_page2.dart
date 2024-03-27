@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/models/ChunkModel.dart';
+import 'package:flutter_application_2/models/settings_model.dart';
 import 'package:flutter_application_2/pages/pdf_screen/pdf_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +19,7 @@ class _ReadingPage2State extends State<ReadingPage2> {
   Timer? _timer;
   bool _isRunning = false;
   bool _dontShowImage = true;
-  final int _miliseconds =300;
+  //int _milisec = 200;
   @override
   void initState() {
     super.initState();
@@ -34,11 +35,16 @@ class _ReadingPage2State extends State<ReadingPage2> {
 
   void _startReading(BuildContext context) {
     final chunkModel = context.read<ChunkModel>();
-    List<String> words = chunkModel.getText.split(' ');
-    print("words+${words}");
-    print(words.length);
+    final settingsModel = context.read<SettingsModel>();
+    double wordsPerMinute = settingsModel.getCurrentSliderValue;
+    print("word per min:+${wordsPerMinute}");
+    double asMilisecond = (( 60 / wordsPerMinute ) * 1000);
+    int asMillisecondsRounded = asMilisecond.round();
 
-    _timer = Timer.periodic(const Duration(milliseconds: _miliseconds), (timer) {
+    List<String> words = chunkModel.getText.split(' ');
+    print("Milisecond:+${asMillisecondsRounded}");
+
+    _timer = Timer.periodic(Duration(milliseconds: asMillisecondsRounded), (timer) {
       setState(() {
         if (_counter >= words.length) {
           _dontShowImage = false;

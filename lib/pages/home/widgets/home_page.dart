@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_2/models/ChunkModel.dart';
+import 'package:flutter_application_2/models/settings_model.dart';
 import 'package:flutter_application_2/pages/reading/widgets/reading_page.dart';
 import 'package:flutter_application_2/pages/reading/widgets/reading_page2.dart';
+import 'package:flutter_application_2/pages/settings/views/setting_page.dart';
 import 'package:flutter_application_2/utils/helper_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
@@ -58,69 +60,84 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        title: Text("Speed Reader",
-            style: Theme.of(context).textTheme.displayMedium),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () async {
-                await _extractTextFromPDF("ASD").then((value) {
-                  final chunkModel = ChunkModel(allPdfText: value);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChangeNotifierProvider(
-                        create: (context) => chunkModel,
-                        child: const ReadingPage2(
-                            title: "Speed Reader"), // Removed const here
-                      ),
-                    ),
-                  );
-                });
-              },
-              child: const Text('Import PDF'),
-            ),
-            addVerticalSpace(30),
-            ElevatedButton(
-              onPressed: () async {
-                await _extractTextFromPDF("ASD").then((value) => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const ReadingPage(title: "Speed Reader"))));
-              },
-              child: const Text('Read Daily News'),
-            ),
-            addVerticalSpace(30),
-            ElevatedButton(
-              onPressed: () async {
-                await _extractTextFromPDF("ASD").then((value) => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const ReadingPage(title: "Speed Reader"))));
-              },
-              child: const Text('Read Saved Books'),
-            ),
-            addVerticalSpace(30),
-            ElevatedButton(
-              onPressed: () async {
-                await _extractTextFromPDF("ASD").then((value) => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const ReadingPage(title: "Speed Reader"))));
-              },
-              child: const Text('Read text'),
-            )
-          ],
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          title: Text("Speed Reader",
+              style: Theme.of(context).textTheme.displayMedium),
         ),
-      ),
-    );
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  await _extractTextFromPDF("ASD").then((value) {
+                    final chunkModel = ChunkModel(allPdfText: value);
+                    //final settingsModel = SettingsModel();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MultiProvider(
+                          providers: [
+                            ChangeNotifierProvider<ChunkModel>(
+                              create: (_) => chunkModel,
+                            ),
+                          ],
+                          child: const ReadingPage2(
+                            title: "Speed Reader",
+                          ),
+                        ),
+                      ),
+                    );
+                  });
+                },
+                child: const Text('Import PDF'),
+              ),
+              addVerticalSpace(30),
+              ElevatedButton(
+                onPressed: () async {
+                  await _extractTextFromPDF("ASD").then((value) =>
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const ReadingPage(title: "Speed Reader"))));
+                },
+                child: const Text('Read Daily News'),
+              ),
+              addVerticalSpace(30),
+              ElevatedButton(
+                onPressed: () async {
+                  await _extractTextFromPDF("ASD").then((value) =>
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const ReadingPage(title: "Speed Reader"))));
+                },
+                child: const Text('Read Saved Books'),
+              ),
+              addVerticalSpace(30),
+              ElevatedButton(
+                onPressed: () async {
+                  await _extractTextFromPDF("ASD").then((value) =>
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const ReadingPage(title: "Speed Reader"))));
+                },
+                child: const Text('Scan Text'),
+              )
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const SettingsPage()))
+          },
+          child: const Icon(Icons.settings),
+        ));
   }
 }
