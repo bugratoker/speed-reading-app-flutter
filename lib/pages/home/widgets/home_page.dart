@@ -88,7 +88,10 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                    );
+                    ).then((_) {
+                    // Dispose of chunkModel when returning from ReadingPage2
+                    chunkModel.dispose();
+                  });
                   });
                 },
                 child: const Text('Import PDF'),

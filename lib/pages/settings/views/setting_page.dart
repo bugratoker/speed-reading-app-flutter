@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/models/settings_model.dart';
 import 'package:flutter_application_2/pages/settings/widgets/custom_list_tile.dart';
 import 'package:flutter_application_2/pages/settings/widgets/single_section.dart';
-import 'package:provider/provider.dart';
 import "../widgets/slider_widget.dart";
 
 class SettingsPage extends StatelessWidget {
