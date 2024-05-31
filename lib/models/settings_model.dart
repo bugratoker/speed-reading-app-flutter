@@ -10,7 +10,6 @@ class SettingsModel extends ChangeNotifier{
 
   void changeSliderValue(double newValue){
     _currentSliderValue = newValue;
-    print("currentSliderValue From Model : ${_currentSliderValue}");
     notifyListeners();
   }
 }

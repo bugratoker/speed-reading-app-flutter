@@ -1,10 +1,21 @@
+import 'dart:io';
 import 'package:flutter_application_2/models/settings_model.dart';
-import 'package:flutter_application_2/pages/home/widgets/home_page.dart';
+import 'package:flutter_application_2/pages/login/views/login_page.dart';
+import 'package:flutter_application_2/pages/register/views/register_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
 void main() {
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 
@@ -23,7 +34,7 @@ class MyApp extends StatelessWidget {
             appBarTheme: const AppBarTheme(centerTitle: true),
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromARGB(255, 31, 52, 170),
+              seedColor: const Color.fromARGB(255, 71, 149, 222),
               brightness: Brightness.light,
             ),
             textTheme: TextTheme(
@@ -32,21 +43,22 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
               displayMedium: GoogleFonts.fjallaOne(
-                fontSize: 30,
+                fontSize: 26,
                 fontStyle: FontStyle.normal,
               ),
               titleLarge: GoogleFonts.oswald(
                 fontSize: 30,
-                fontStyle: FontStyle.italic,
+                fontStyle: FontStyle.normal,
               ),
               bodyMedium: GoogleFonts.merriweather(),
               displaySmall: GoogleFonts.fjallaOne(
-                fontSize: 20,
+                fontSize: 16,
                 fontStyle: FontStyle.normal,
+                color: Colors.white60
               ),
             ),
           ),
-          home: const HomePage(),
+          home: const RegisterPage(),
         ));
   }
 }

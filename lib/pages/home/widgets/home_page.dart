@@ -5,36 +5,34 @@ import 'package:flutter_application_2/models/ChunkModel.dart';
 import 'package:flutter_application_2/models/settings_model.dart';
 import 'package:flutter_application_2/pages/reading/widgets/reading_page.dart';
 import 'package:flutter_application_2/pages/reading/widgets/reading_page2.dart';
+import 'package:flutter_application_2/pages/saved_books/views/saved_books_page.dart';
 import 'package:flutter_application_2/pages/settings/views/setting_page.dart';
 import 'package:flutter_application_2/utils/helper_widgets.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String token;
+  const HomePage({super.key, required this.token});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-/*
-    Future<File> fromAsset(String asset, String filename) async {
-    Completer<File> completer = Completer();
-    try {
-      //var dir = await getApplicationDocumentsDirectory();
-      File file = File("${dir.path}/$filename");
-      var data = await rootBundle.load(asset);
-      var bytes = data.buffer.asUint8List();
-      await file.writeAsBytes(bytes, flush: true);
-      completer.complete(file);
-    } catch (e) {
-      throw Exception('Error parsing asset file!');
-    }
-
-    return completer.future;
+  String fullName = "";
+  String id = "";
+  @override
+  void initState() {
+    super.initState();
+    // Decode the JWT token and extract the full name
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(widget.token);
+    fullName = decodedToken['fullName'];
+    id = decodedToken[
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
   }
-*/
+
   Future<List<int>> _readDocumentData(String name) async {
     final ByteData data = await rootBundle.load('assets/$name');
     return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
@@ -69,6 +67,9 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text("welcome $fullName !",
+                  style: Theme.of(context).textTheme.titleLarge),
+              addVerticalSpace(60),
               ElevatedButton(
                 onPressed: () async {
                   await _extractTextFromPDF("ASD").then((value) {
@@ -89,9 +90,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ).then((_) {
-                    // Dispose of chunkModel when returning from ReadingPage2
-                    chunkModel.dispose();
-                  });
+                      // Dispose of chunkModel when returning from ReadingPage2
+                      chunkModel.dispose();
+                    });
                   });
                 },
                 child: const Text('Import PDF'),
@@ -118,19 +119,17 @@ class _HomePageState extends State<HomePage> {
                               builder: (context) =>
                                   const ReadingPage(title: "Speed Reader"))));
                 },
-                child: const Text('Read Saved Books'),
+                child: const Text('Scan Text'),
               ),
               addVerticalSpace(30),
               ElevatedButton(
-                onPressed: () async {
-                  await _extractTextFromPDF("ASD").then((value) =>
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const ReadingPage(title: "Speed Reader"))));
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SavedBooksPage(id: id)));
                 },
-                child: const Text('Scan Text'),
+                child: const Text('Read Saved Books'),
               )
             ],
           ),
