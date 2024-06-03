@@ -7,7 +7,6 @@ class UserService {
   static String portNumber = AppStrings.portNumber;
   static Future<Map<String, dynamic>> logIn(
       Map<String, dynamic> requestBody) async {
-    String? token;
     try {
       Response response = await Dio().post('https://10.0.2.2:$portNumber/tokens',
           options: Options(headers: {

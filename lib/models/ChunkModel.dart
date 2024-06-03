@@ -9,7 +9,7 @@ class ChunkModel extends ChangeNotifier {
   late Image image;
   int chunkSize = 150;
   int currentPosition = 0;
-
+  bool _disposed = false; // Flag to track if the model has been disposed
   Image get getImage => image;
   String get getText => textChunks[currentPosition];
 
@@ -19,36 +19,54 @@ class ChunkModel extends ChangeNotifier {
   }
   @override
   void dispose() {
+    // ignore: avoid_print
     print('ChunkModel disposed');
+    _disposed = true;  // Set the disposed flag to true
     super.dispose();
   }
 
   void _splitTextIntoChunks() {
     textChunks = [];
     final words = allPdfText;
-    for (int i = 0; i < words.length - 300; i += chunkSize) {
-      final chunk = words.sublist(i, i + chunkSize).join(' ');
+
+    for (int i = 0; i < words.length; i += chunkSize) {
+      int endIndex = i + chunkSize;
+      if (endIndex > words.length) {
+        endIndex = words.length;
+      }
+      final chunk = words.sublist(i, endIndex).join(' ');
       textChunks.add(chunk);
     }
-    print(textChunks.first);
     changeImage();
   }
 
   void changeText() {
+    if (_disposed) return; // Check if the model has been disposed
     if (currentPosition + 1 < textChunks.length) {
       currentPosition++;
-      notifyListeners();
+      if (!_disposed) {
+        // Check again before notifying listeners
+        notifyListeners();
+      }
     } else {
       // ignore: avoid_print
       print('No more chunks available.');
     }
-    changeImage();
+    if (!_disposed) {
+      // Ensure not disposed before proceeding to change the image
+      changeImage();
+    }
   }
 
   void changeImage() async {
     var base64image =
         await APIService.generateImage(textChunks[currentPosition]);
+    if (_disposed) return; // Check if disposed before updating the UI
+
     image = Image.memory(base64Decode(base64image));
-    notifyListeners();
+    if (!_disposed) {
+      // Double-check in case the model was disposed during image processing
+      notifyListeners();
+    }
   }
 }

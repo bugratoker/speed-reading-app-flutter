@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(
               seedColor: const Color.fromARGB(255, 71, 149, 222),
               brightness: Brightness.light,
+              background: const Color.fromARGB(255, 192, 210, 236)
             ),
             textTheme: TextTheme(
               displayLarge: const TextStyle(

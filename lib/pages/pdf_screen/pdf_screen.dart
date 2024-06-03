@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 class PDFScreen extends StatefulWidget {
@@ -15,12 +17,7 @@ class _PDFScreenState extends State<PDFScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        title: Text("Document",
-            style: Theme.of(context).textTheme.displayMedium),
-      ),
-      body: SfPdfViewer.asset(widget.path)
+      body: SfPdfViewer.file(File(widget.path))
     );
   }
 }

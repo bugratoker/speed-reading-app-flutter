@@ -1,17 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_2/models/ChunkModel.dart';
-import 'package:flutter_application_2/models/settings_model.dart';
-import 'package:flutter_application_2/pages/reading/widgets/reading_page.dart';
-import 'package:flutter_application_2/pages/reading/widgets/reading_page2.dart';
 import 'package:flutter_application_2/pages/saved_books/views/saved_books_page.dart';
 import 'package:flutter_application_2/pages/settings/views/setting_page.dart';
 import 'package:flutter_application_2/utils/helper_widgets.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
-
+import '../../../utils/file_reader.dart';
 class HomePage extends StatefulWidget {
   final String token;
   const HomePage({super.key, required this.token});
@@ -70,66 +65,89 @@ class _HomePageState extends State<HomePage> {
               Text("welcome $fullName !",
                   style: Theme.of(context).textTheme.titleLarge),
               addVerticalSpace(60),
-              ElevatedButton(
-                onPressed: () async {
-                  await _extractTextFromPDF("ASD").then((value) {
-                    final chunkModel = ChunkModel(allPdfText: value);
-                    //final settingsModel = SettingsModel();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MultiProvider(
-                          providers: [
-                            ChangeNotifierProvider<ChunkModel>(
-                              create: (_) => chunkModel,
-                            ),
-                          ],
-                          child: const ReadingPage2(
-                            title: "Speed Reader",
-                          ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 200,
+                    child: ElevatedButton(
+                      // onPressed: () async {
+                      //   await _extractTextFromPDF("ASD").then((value) {
+                      //     final chunkModel = ChunkModel(allPdfText: value);
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) => MultiProvider(
+                      //           providers: [
+                      //             ChangeNotifierProvider<ChunkModel>(
+                      //               create: (_) => chunkModel,
+                      //             ),
+                      //           ],
+                      //           child: const ReadingPage2(
+                      //             title: "Speed Reader",
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ).then((_) {
+                      //       // Dispose of chunkModel when returning from ReadingPage2
+                      //       chunkModel.dispose();
+                      //     });
+                      //   }
+                      //   );
+                      // },
+                      
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 15),
+                        textStyle: const TextStyle(fontSize: 18),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25)),
                         ),
                       ),
-                    ).then((_) {
-                      // Dispose of chunkModel when returning from ReadingPage2
-                      chunkModel.dispose();
-                    });
-                  });
-                },
-                child: const Text('Import PDF'),
-              ),
-              addVerticalSpace(30),
-              ElevatedButton(
-                onPressed: () async {
-                  await _extractTextFromPDF("ASD").then((value) =>
-                      Navigator.push(
+                      onPressed: () => FileReader.pickPDFAndNavigate(context),
+                      child:Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons
+                              .picture_as_pdf,size: 40,), // Replace with your desired icon
+                          addVerticalSpace(10), // Space between icon and text
+                          const Text('Import PDF'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  addHorizontalSpace(20),
+                  addVerticalSpace(30), // Add space between buttons
+                  SizedBox(
+                    height: 200,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const ReadingPage(title: "Speed Reader"))));
-                },
-                child: const Text('Read Daily News'),
-              ),
-              addVerticalSpace(30),
-              ElevatedButton(
-                onPressed: () async {
-                  await _extractTextFromPDF("ASD").then((value) =>
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const ReadingPage(title: "Speed Reader"))));
-                },
-                child: const Text('Scan Text'),
-              ),
-              addVerticalSpace(30),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SavedBooksPage(id: id)));
-                },
-                child: const Text('Read Saved Books'),
+                            builder: (context) => SavedBooksPage(id: id),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 15),
+                        textStyle: const TextStyle(fontSize: 18),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25)),
+                        ),
+                      ),
+                      child:Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.book,size: 40), // Replace with your desired icon
+                          addVerticalSpace(10), // Space between icon and text
+                          const Text('Saved Books'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               )
             ],
           ),
