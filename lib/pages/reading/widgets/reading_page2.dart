@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/models/ChunkModel.dart';
 import 'package:flutter_application_2/models/settings_model.dart';
 import 'package:flutter_application_2/pages/pdf_screen/pdf_screen.dart';
+import 'package:flutter_application_2/services/book_service.dart';
 import 'package:provider/provider.dart';
 
 class ReadingPage2 extends StatefulWidget {
@@ -19,6 +20,8 @@ class _ReadingPage2State extends State<ReadingPage2> {
   Timer? _timer;
   bool _isRunning = false;
   bool _dontShowImage = true;
+  int currentPosition=0;
+  String bookId ="";
   //int _milisec = 200;
   @override
   void initState() {
@@ -36,24 +39,27 @@ class _ReadingPage2State extends State<ReadingPage2> {
   void _startReading(BuildContext context) {
     final chunkModel = context.read<ChunkModel>();
     final settingsModel = context.read<SettingsModel>();
+    currentPosition = chunkModel.currentPosition;
+    bookId = chunkModel.bookId;
     double wordsPerMinute = settingsModel.getCurrentSliderValue;
     print("word per min:+${wordsPerMinute}");
-    double asMilisecond = (( 60 / wordsPerMinute ) * 1000);
+    double asMilisecond = ((60 / wordsPerMinute) * 1000);
     int asMillisecondsRounded = asMilisecond.round();
 
     List<String> words = chunkModel.getText.split(' ');
     print("Milisecond:+${asMillisecondsRounded}");
 
-    _timer = Timer.periodic(Duration(milliseconds: asMillisecondsRounded), (timer) {
+    _timer =
+        Timer.periodic(Duration(milliseconds: asMillisecondsRounded), (timer) {
       setState(() {
         if (_counter >= words.length) {
           _dontShowImage = false;
           _counter = 0;
-          currentWord="";
+          currentWord = "";
           _stopReading(context);
           chunkModel.changeText();
         } else {
-          _isRunning =true;
+          _isRunning = true;
           currentWord = words[_counter];
           _counter++;
         }
@@ -61,15 +67,54 @@ class _ReadingPage2State extends State<ReadingPage2> {
     });
   }
 
+  Future<void> _updateBookProperties() async {
+    // For now it is just 0 for simplicity 
+    int wordIndex = 0;
+    await BookService.updateBookProperties(bookId, currentPosition, wordIndex);
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
+    _updateBookProperties();
     super.dispose();
+  }
+
+  void dontShowImage(BuildContext context) {
+    setState(() {
+      _dontShowImage = !_dontShowImage;
+      _isRunning = !_isRunning;
+      _startReading(context);
+    });
+  }
+
+  Widget _buildRichText(String word, BuildContext context) {
+    if (word.isEmpty) return Container();
+
+    // Determine the center index
+    int centerIndex = (word.length / 2).floor();
+
+    // Split the word into three parts
+    String beforeCenter = word.substring(0, centerIndex);
+    String centerLetter = word[centerIndex];
+    String afterCenter = word.substring(centerIndex + 1);
+
+    return RichText(
+      text: TextSpan(
+        style: Theme.of(context).textTheme.displayMedium,
+        children: [
+          TextSpan(text: beforeCenter),
+          TextSpan(
+              text: centerLetter, style: const TextStyle(color: Colors.red)),
+          TextSpan(text: afterCenter),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return _dontShowImage
+    return (_dontShowImage)
         ? Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -115,8 +160,7 @@ class _ReadingPage2State extends State<ReadingPage2> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(currentWord,
-                          style: Theme.of(context).textTheme.displayMedium),
+                      _buildRichText(currentWord, context),
                     ],
                   ),
                 ),
@@ -140,13 +184,5 @@ class _ReadingPage2State extends State<ReadingPage2> {
             },
             child: context.read<ChunkModel>().getImage,
           );
-  }
-
-  void dontShowImage(BuildContext context) {
-    setState(() {
-      _dontShowImage = !_dontShowImage;
-      _isRunning = !_isRunning;
-      _startReading(context);
-    });
   }
 }

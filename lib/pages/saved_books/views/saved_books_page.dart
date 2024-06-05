@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/models/book_model.dart';
+import 'package:flutter_application_2/pages/saved_books/views/book_details_page.dart';
 import 'package:flutter_application_2/services/book_service.dart';
 
 class SavedBooksPage extends StatefulWidget {
@@ -38,6 +39,7 @@ class _SavedBooksPageState extends State<SavedBooksPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Saved Books'),
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       body: _buildContent(),
     );
@@ -45,30 +47,29 @@ class _SavedBooksPageState extends State<SavedBooksPage> {
 
   Widget _buildContent() {
     if (isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
-
     if (errorMessage != null) {
       return Center(child: Text(errorMessage!));
     }
-
     if (allBooks.isEmpty) {
       return const Center(child: Text('No books available.'));
     }
-
     return ListView.builder(
       itemCount: allBooks.length,
       itemBuilder: (context, index) {
         final book = allBooks[index];
         return Card(
           child: ListTile(
-            title: Text(book.name),
+            title: Text(book.name,
+                style: Theme.of(context).textTheme.bodyMedium),
             onTap: () {
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (context) => BookDetailsPage(bookId: book.id),
-              //   ),
-              // );
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      BookDetailsPage(bookId: book.id, bookName: book.name),
+                ),
+              );
             },
           ),
         );

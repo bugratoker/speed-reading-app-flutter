@@ -7,13 +7,14 @@ class ChunkModel extends ChangeNotifier {
   List<String> allPdfText;
   late List<String> textChunks;
   late Image image;
+  late String bookId;
   int chunkSize = 150;
   int currentPosition = 0;
   bool _disposed = false; // Flag to track if the model has been disposed
   Image get getImage => image;
   String get getText => textChunks[currentPosition];
 
-  ChunkModel({required this.allPdfText}) {
+  ChunkModel({required this.allPdfText,required this.currentPosition,required this.bookId}) {
     print(allPdfText.first);
     _splitTextIntoChunks();
   }

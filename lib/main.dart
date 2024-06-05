@@ -51,7 +51,11 @@ class MyApp extends StatelessWidget {
                 fontSize: 30,
                 fontStyle: FontStyle.normal,
               ),
-              bodyMedium: GoogleFonts.merriweather(),
+              bodyMedium: GoogleFonts.oswald(
+                fontSize: 20,
+                fontStyle: FontStyle.normal,
+                color: const Color.fromARGB(255, 13, 13, 14)
+              ),
               displaySmall: GoogleFonts.fjallaOne(
                 fontSize: 16,
                 fontStyle: FontStyle.normal,
@@ -59,7 +63,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          home: const RegisterPage(),
+          home: const LoginPage(),
         ));
   }
 }

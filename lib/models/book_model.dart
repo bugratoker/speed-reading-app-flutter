@@ -3,7 +3,7 @@ class Book {
   final String name;
   final int currentChunkIndex;
   final int wordIndex;
-
+  
   Book({
     required this.id,
     required this.name,

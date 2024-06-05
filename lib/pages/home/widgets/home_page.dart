@@ -27,29 +27,6 @@ class _HomePageState extends State<HomePage> {
     id = decodedToken[
         "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
   }
-
-  Future<List<int>> _readDocumentData(String name) async {
-    final ByteData data = await rootBundle.load('assets/$name');
-    return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-  }
-
-  Future<List<String>> _extractTextFromPDF(String pdfPath) async {
-    PdfDocument document =
-        PdfDocument(inputBytes: await _readDocumentData('sample.pdf'));
-
-    //Create a new instance of the PdfTextExtractor.
-    PdfTextExtractor extractor = PdfTextExtractor(document);
-    String text = extractor.extractText();
-    // Split the input string based on one or more whitespace characters
-    List<String> words = text.split(RegExp(r'\s+'));
-
-    // Remove empty strings resulting from consecutive spaces
-    words.removeWhere((word) => word.isEmpty);
-
-    //List<String> first500Words = words.take(500).toList();
-    return words;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,31 +48,6 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 200,
                     child: ElevatedButton(
-                      // onPressed: () async {
-                      //   await _extractTextFromPDF("ASD").then((value) {
-                      //     final chunkModel = ChunkModel(allPdfText: value);
-                      //     Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //         builder: (context) => MultiProvider(
-                      //           providers: [
-                      //             ChangeNotifierProvider<ChunkModel>(
-                      //               create: (_) => chunkModel,
-                      //             ),
-                      //           ],
-                      //           child: const ReadingPage2(
-                      //             title: "Speed Reader",
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ).then((_) {
-                      //       // Dispose of chunkModel when returning from ReadingPage2
-                      //       chunkModel.dispose();
-                      //     });
-                      //   }
-                      //   );
-                      // },
-                      
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 15),
@@ -104,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                           borderRadius: BorderRadius.all(Radius.circular(25)),
                         ),
                       ),
-                      onPressed: () => FileReader.pickPDFAndNavigate(context),
+                      onPressed: () => FileReader.pickPDFAndNavigate(context,id),
                       child:Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

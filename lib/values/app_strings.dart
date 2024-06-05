@@ -40,6 +40,6 @@ class AppStrings {
   static const String lastName = 'Last Name';
   static const String userName = 'Username';
   static const String phoneNumber = 'Phone Number';
-  static const String portNumber ='52272';
+  static const String portNumber ='60770';
   static String jwt="";
 }
