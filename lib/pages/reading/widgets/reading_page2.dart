@@ -7,9 +7,11 @@ import 'package:flutter_application_2/services/book_service.dart';
 import 'package:provider/provider.dart';
 
 class ReadingPage2 extends StatefulWidget {
-  const ReadingPage2({super.key, required this.title});
+  const ReadingPage2({super.key, required this.title, this.pdfBytes,this.dontShowPdf});
 
   final String title;
+  final List<int>? pdfBytes;
+  final bool? dontShowPdf;
   @override
   State<ReadingPage2> createState() => _ReadingPage2State();
 }
@@ -20,8 +22,9 @@ class _ReadingPage2State extends State<ReadingPage2> {
   Timer? _timer;
   bool _isRunning = false;
   bool _dontShowImage = true;
-  int currentPosition=0;
-  String bookId ="";
+  int currentPosition = 0;
+  String bookId = "";
+
   //int _milisec = 200;
   @override
   void initState() {
@@ -40,7 +43,9 @@ class _ReadingPage2State extends State<ReadingPage2> {
     final chunkModel = context.read<ChunkModel>();
     final settingsModel = context.read<SettingsModel>();
     currentPosition = chunkModel.currentPosition;
-    bookId = chunkModel.bookId;
+    setState(() {
+      bookId = chunkModel.bookId;
+    });
     double wordsPerMinute = settingsModel.getCurrentSliderValue;
     print("word per min:+${wordsPerMinute}");
     double asMilisecond = ((60 / wordsPerMinute) * 1000);
@@ -68,7 +73,7 @@ class _ReadingPage2State extends State<ReadingPage2> {
   }
 
   Future<void> _updateBookProperties() async {
-    // For now it is just 0 for simplicity 
+    // For now it is just 0 for simplicity
     int wordIndex = 0;
     await BookService.updateBookProperties(bookId, currentPosition, wordIndex);
   }
@@ -76,7 +81,9 @@ class _ReadingPage2State extends State<ReadingPage2> {
   @override
   void dispose() {
     _timer?.cancel();
-    _updateBookProperties();
+    if (bookId != "-1") {
+      _updateBookProperties();
+    }
     super.dispose();
   }
 
@@ -125,37 +132,37 @@ class _ReadingPage2State extends State<ReadingPage2> {
 
             body: Stack(
               children: [
-                Positioned(
-                  top: 20.0,
-                  right: 10.0,
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const PDFScreen(path: 'assets/sample.pdf'),
+                (widget.dontShowPdf != true)
+                    ? Positioned(
+                        top: 20.0,
+                        right: 10.0,
+                        child: SizedBox(
+                          width: 50.0,
+                          height: 50.0,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PDFScreen(
+                                      pdfBytes: widget.pdfBytes! ),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    20.0), // Set border radius
+                              ),
+                            ),
+                            child: const Center(
+                              child: Icon(Icons.menu_book_sharp),
+                            ),
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          // Set square shape
-                          borderRadius: BorderRadius.circular(
-                              20.0), // Set border radius to 0 for square shape
-                        ), // Remove padding
-                      ),
-                      child: const Center(
-                        // Center the Icon within the SizedBox
-                        child: Icon(Icons.menu_book_sharp),
-                      ),
-                    ),
-                  ),
-                ),
+                        ),
+                      )
+                    : Container(),
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

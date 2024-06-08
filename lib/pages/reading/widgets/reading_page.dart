@@ -82,13 +82,7 @@ class _ReadingPageState extends State<ReadingPage> {
                     height: 50.0,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const PDFScreen(path: 'assets/sample.pdf'),
-                          ),
-                        );
+                        
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.zero,

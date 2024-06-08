@@ -12,14 +12,11 @@ class APIService {
       );
       //print("Response data: ${response.data}");
       //Map<String, dynamic> data = json.decode(response.data);
-
       imageBase64 = response.data['image'];
-
       //summarizedText = response.data['summarizedText'];
     } catch (e) {
       //print("Error fetching data: $e");
     }
-
     return imageBase64;
   }
 }

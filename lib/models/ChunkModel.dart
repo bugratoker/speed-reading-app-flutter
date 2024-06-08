@@ -6,15 +6,18 @@ import 'package:flutter_application_2/services/api_service.dart';
 class ChunkModel extends ChangeNotifier {
   List<String> allPdfText;
   late List<String> textChunks;
-  late Image image;
+  Image? image;
   late String bookId;
   int chunkSize = 150;
   int currentPosition = 0;
   bool _disposed = false; // Flag to track if the model has been disposed
-  Image get getImage => image;
+  Image? get getImage => image;
   String get getText => textChunks[currentPosition];
 
-  ChunkModel({required this.allPdfText,required this.currentPosition,required this.bookId}) {
+  ChunkModel(
+      {required this.allPdfText,
+      required this.currentPosition,
+      required this.bookId}) {
     print(allPdfText.first);
     _splitTextIntoChunks();
   }
@@ -22,7 +25,7 @@ class ChunkModel extends ChangeNotifier {
   void dispose() {
     // ignore: avoid_print
     print('ChunkModel disposed');
-    _disposed = true;  // Set the disposed flag to true
+    _disposed = true; // Set the disposed flag to true
     super.dispose();
   }
 
@@ -38,6 +41,7 @@ class ChunkModel extends ChangeNotifier {
       final chunk = words.sublist(i, endIndex).join(' ');
       textChunks.add(chunk);
     }
+    if (words.length < 200) {return;}
     changeImage();
   }
 

@@ -1,12 +1,11 @@
 import "dart:convert";
 import "dart:io";
-
 import "package:dio/dio.dart";
+import "package:flutter_application_2/models/book_data.dart";
 import "package:flutter_application_2/models/book_model.dart";
 import "package:flutter_application_2/models/book_view_model.dart";
 import "package:flutter_application_2/utils/file_reader.dart";
 import "package:flutter_application_2/values/app_strings.dart";
-
 class BookService {
   static String portNumber = AppStrings.portNumber;
   static String jwt = AppStrings.jwt;
@@ -30,16 +29,13 @@ class BookService {
       return [];
     }
   }
-
   static Future<String> savePDF(
       String pdfPath, String pdfName, String userId) async {
     // Read file bytes
     File file = File(pdfPath);
     List<int> fileBytes = await file.readAsBytes();
-
     // Convert to base64 string
     String base64Pdf = base64Encode(fileBytes);
-
     // Create request body
     Map<String, dynamic> requestBody = {
       "name": pdfName,
@@ -48,7 +44,6 @@ class BookService {
       "userId": userId,
       "pdfContent": base64Pdf,
     };
-
     // Send POST request
     try {
       Response response = await Dio().post(
@@ -73,8 +68,7 @@ class BookService {
       return "";
     }
   }
-
-  static Future<BookView> getBookById(String bookId) async {
+  static Future<BookData> getBookById(String bookId) async {
     try {
       Response response = await Dio().get(
           'https://10.0.2.2:$portNumber/v1/books/$bookId',
@@ -94,7 +88,8 @@ class BookService {
             currentChunkIndex: response.data["currentChunkIndex"],
             wordIndex: response.data["wordIndex"],
             pdfContent: allWords);
-        return book;
+        BookData bookData = BookData(bookView: book, pdfBytes: bytes);
+        return bookData;
       } else {
         throw Exception();
       }
@@ -102,7 +97,6 @@ class BookService {
       throw Exception();
     }
   }
-
   static Future<void> updateBookProperties(
       String bookId,int currentChunkIndex, int wordIndex) async {
     try {

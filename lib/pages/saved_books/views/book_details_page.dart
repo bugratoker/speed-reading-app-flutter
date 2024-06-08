@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/models/ChunkModel.dart';
+import 'package:flutter_application_2/models/book_data.dart';
 import 'package:flutter_application_2/models/book_view_model.dart';
 import 'package:flutter_application_2/pages/reading/widgets/reading_page2.dart';
 import 'package:flutter_application_2/services/book_service.dart';
@@ -10,6 +11,7 @@ class BookDetailsPage extends StatefulWidget {
       {super.key, required this.bookId, required this.bookName});
   final String bookId;
   final String bookName;
+  
 
   @override
   State<BookDetailsPage> createState() => _BookDetailsPageState();
@@ -17,6 +19,7 @@ class BookDetailsPage extends StatefulWidget {
 
 class _BookDetailsPageState extends State<BookDetailsPage> {
   late BookView book;
+  late BookData bookData;
   bool isLoading = true; // Add a loading state
   @override
   void initState() {
@@ -26,7 +29,8 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
 
   Future<void> _initalizeSelectedBook() async {
     try {
-      book = await BookService.getBookById(widget.bookId);
+      bookData = await BookService.getBookById(widget.bookId);
+      book = bookData.bookView;
     } catch (e) {
       return;
     } finally {
@@ -49,6 +53,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             bookId: widget.bookId),
         child: ReadingPage2(
           title: book.name,
+          pdfBytes: bookData.pdfBytes,
         ));
   }
 }
