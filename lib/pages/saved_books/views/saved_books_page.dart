@@ -59,10 +59,16 @@ class _SavedBooksPageState extends State<SavedBooksPage> {
       itemCount: allBooks.length,
       itemBuilder: (context, index) {
         final book = allBooks[index];
+        final double progress =
+            (book.currentChunkIndex / book.totalChunkCount) * 100;
+        final String progressText = "${progress.toStringAsFixed(0)}%";
+
         return Card(
           child: ListTile(
-            title: Text(book.name,
-                style: Theme.of(context).textTheme.bodyMedium),
+            title:
+                Text(book.name, style: Theme.of(context).textTheme.bodyMedium),
+            trailing: Text(progressText,
+                style: Theme.of(context).textTheme.bodySmall),
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(

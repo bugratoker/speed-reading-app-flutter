@@ -41,7 +41,7 @@ class ChunkModel extends ChangeNotifier {
       final chunk = words.sublist(i, endIndex).join(' ');
       textChunks.add(chunk);
     }
-    if (words.length < 200) {return;}
+    //if (words.length < 200) {return;}
     changeImage();
   }
 
@@ -59,6 +59,7 @@ class ChunkModel extends ChangeNotifier {
     }
     if (!_disposed) {
       // Ensure not disposed before proceeding to change the image
+      if(getText.split(' ').length<150){return;}
       changeImage();
     }
   }

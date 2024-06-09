@@ -34,6 +34,7 @@ class BookService {
     // Read file bytes
     File file = File(pdfPath);
     List<int> fileBytes = await file.readAsBytes();
+    int totalChunkCount = await FileReader.getChunkCount(fileBytes: fileBytes);
     // Convert to base64 string
     String base64Pdf = base64Encode(fileBytes);
     // Create request body
@@ -43,6 +44,7 @@ class BookService {
       "wordIndex": 0,
       "userId": userId,
       "pdfContent": base64Pdf,
+      "totalChunkCount":totalChunkCount
     };
     // Send POST request
     try {
@@ -86,6 +88,7 @@ class BookService {
             id: bookId,
             name: response.data["name"],
             currentChunkIndex: response.data["currentChunkIndex"],
+            totalChunkCount: response.data["totalChunkCount"],
             wordIndex: response.data["wordIndex"],
             pdfContent: allWords);
         BookData bookData = BookData(bookView: book, pdfBytes: bytes);

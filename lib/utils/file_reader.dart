@@ -78,6 +78,21 @@ static Future<List<String>> extractTextFromPDF({String? pdfPath, List<int>? file
   words.removeWhere((word) => word.isEmpty);
   return words;
 }
+static Future<int> getChunkCount({ List<int>? fileBytes}) async {
+
+  // Load the PDF document
+  PdfDocument document = PdfDocument(inputBytes: fileBytes);
+
+  // Create a text extractor
+  PdfTextExtractor extractor = PdfTextExtractor(document);
+  String text = extractor.extractText();
+
+  // Split text into words and filter out empty entries
+  List<String> words = text.split(RegExp(r'\s+'));
+  words.removeWhere((word) => word.isEmpty);
+  int chunkCount=(words.length / 150).ceil();
+  return chunkCount;
+}
 
   static Future<String?> _askForPDFName(BuildContext context) async {
     return showDialog<String>(

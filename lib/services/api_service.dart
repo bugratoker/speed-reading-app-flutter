@@ -10,7 +10,7 @@ class APIService {
         'http://10.0.2.2:8000/',
         queryParameters: {'prompt': text},
       );
-      //print("Response data: ${response.data}");
+      print("Response data: ${response.data}");
       //Map<String, dynamic> data = json.decode(response.data);
       imageBase64 = response.data['image'];
       //summarizedText = response.data['summarizedText'];

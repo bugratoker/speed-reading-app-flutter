@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 15),
-                        textStyle: const TextStyle(fontSize: 18),
+                        textStyle: const TextStyle(fontSize: 16),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(25)),
                         ),
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                             size: 40,
                           ), // Replace with your desired icon
                           addVerticalSpace(10), // Space between icon and text
-                          const Text('Import PDF'),
+                          const Text('Import PDF',style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 15),
-                        textStyle: const TextStyle(fontSize: 18),
+                        textStyle: const TextStyle(fontSize: 16),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(25)),
                         ),
@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                           const Icon(Icons.book,
                               size: 40), // Replace with your desired icon
                           addVerticalSpace(10), // Space between icon and text
-                          const Text('Saved Books'),
+                          const Text('Imported Books',style: TextStyle(fontSize: 16),),
                         ],
                       ),
                     ),
@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 15),
-                        textStyle: const TextStyle(fontSize: 18),
+                        textStyle: const TextStyle(fontSize: 16),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(25)),
                         ),
@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                             size: 40,
                           ), // Replace with your desired icon
                           addVerticalSpace(10), // Space between icon and text
-                          const Text('Paste Text'),
+                          const Text('Paste Text',style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 15),
-                        textStyle: const TextStyle(fontSize: 18),
+                        textStyle: const TextStyle(fontSize: 16),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(25)),
                         ),
@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                           const Icon(Icons.menu_book_rounded,
                               size: 40), // Replace with your desired icon
                           addVerticalSpace(10), // Space between icon and text
-                          const Text('All Books'),
+                          const Text('All Books',style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
