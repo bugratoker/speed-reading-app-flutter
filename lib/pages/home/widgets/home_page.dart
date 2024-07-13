@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_2/pages/all_books/views/all_books_page.dart';
 import 'package:flutter_application_2/pages/copy_paste/views/copy_paste_page.dart';
 import 'package:flutter_application_2/pages/saved_books/views/saved_books_page.dart';
 import 'package:flutter_application_2/pages/settings/views/setting_page.dart';
@@ -33,18 +34,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           title: Text("Speed Reader",
               style: Theme.of(context).textTheme.displayMedium),
         ),
-        body: Center(
+        body: SingleChildScrollView(
+            child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              addVerticalSpace(60),
               Text("welcome $fullName !",
                   style: Theme.of(context).textTheme.titleLarge),
-              addVerticalSpace(60),
+              addVerticalSpace(90),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -70,7 +74,8 @@ class _HomePageState extends State<HomePage> {
                             size: 40,
                           ), // Replace with your desired icon
                           addVerticalSpace(10), // Space between icon and text
-                          const Text('Import PDF',style: TextStyle(fontSize: 16)),
+                          const Text('Import PDF',
+                              style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
@@ -103,7 +108,10 @@ class _HomePageState extends State<HomePage> {
                           const Icon(Icons.book,
                               size: 40), // Replace with your desired icon
                           addVerticalSpace(10), // Space between icon and text
-                          const Text('Imported Books',style: TextStyle(fontSize: 16),),
+                          const Text(
+                            'Imported Books',
+                            style: TextStyle(fontSize: 16),
+                          ),
                         ],
                       ),
                     ),
@@ -143,7 +151,8 @@ class _HomePageState extends State<HomePage> {
                             size: 40,
                           ), // Replace with your desired icon
                           addVerticalSpace(10), // Space between icon and text
-                          const Text('Paste Text',style: TextStyle(fontSize: 16)),
+                          const Text('Paste Text',
+                              style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
@@ -158,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SavedBooksPage(id: id),
+                            builder: (context) => const AllBooksPage(),
                           ),
                         );
                       },
@@ -176,7 +185,8 @@ class _HomePageState extends State<HomePage> {
                           const Icon(Icons.menu_book_rounded,
                               size: 40), // Replace with your desired icon
                           addVerticalSpace(10), // Space between icon and text
-                          const Text('All Books',style: TextStyle(fontSize: 16)),
+                          const Text('All Books',
+                              style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
@@ -185,7 +195,7 @@ class _HomePageState extends State<HomePage> {
               )
             ],
           ),
-        ),
+        )),
         floatingActionButton: FloatingActionButton(
           onPressed: () => {
             Navigator.push(context,

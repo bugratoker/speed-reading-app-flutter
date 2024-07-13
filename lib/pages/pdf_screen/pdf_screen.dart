@@ -17,7 +17,12 @@ class _PDFScreenState extends State<PDFScreen> {
   Widget build(BuildContext context) {
     Uint8List pdfData = Uint8List.fromList(widget.pdfBytes);
     return Scaffold(
-        body: SfPdfViewer.memory(pdfData)// Use the memory constructor
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          title: Text("PDF Content",
+              style: Theme.of(context).textTheme.displayMedium),
+        ),
+        body: SfPdfViewer.memory(pdfData) // Use the memory constructor
         );
   }
 }

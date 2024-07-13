@@ -30,13 +30,11 @@ class BookService {
     }
   }
   static Future<String> savePDF(
-      String pdfPath, String pdfName, String userId) async {
-    // Read file bytes
-    File file = File(pdfPath);
-    List<int> fileBytes = await file.readAsBytes();
-    int totalChunkCount = await FileReader.getChunkCount(fileBytes: fileBytes);
+      List<int> pdfBytes, String pdfName, String userId) async {
+
+    int totalChunkCount = await FileReader.getChunkCount(fileBytes: pdfBytes);
     // Convert to base64 string
-    String base64Pdf = base64Encode(fileBytes);
+    String base64Pdf = base64Encode(pdfBytes);
     // Create request body
     Map<String, dynamic> requestBody = {
       "name": pdfName,
@@ -120,6 +118,25 @@ class BookService {
     } catch (e) {
       // ignore: avoid_print
       print('Failed to update book properties: $e');
+    }
+  }
+  static Future<bool> deleteBookById(String bookId) async {
+    try {
+      Response response = await Dio().delete(
+          'https://10.0.2.2:$portNumber/v1/books',
+          options: Options(headers: {
+            'accept': "application/json",
+            'Authorization': "Bearer $jwt"
+          }),
+          queryParameters: {'id': bookId});
+      if (response.statusCode == 200) {
+        await Future.delayed(const Duration(seconds: 1));
+        return true;
+      } else {
+        throw Exception();
+      }
+    } catch (e) {
+      throw Exception();
     }
   }
 }

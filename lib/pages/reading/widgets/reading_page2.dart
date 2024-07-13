@@ -7,7 +7,8 @@ import 'package:flutter_application_2/services/book_service.dart';
 import 'package:provider/provider.dart';
 
 class ReadingPage2 extends StatefulWidget {
-  const ReadingPage2({super.key, required this.title, this.pdfBytes,this.dontShowPdf});
+  const ReadingPage2(
+      {super.key, required this.title, this.pdfBytes, this.dontShowPdf});
 
   final String title;
   final List<int>? pdfBytes;
@@ -47,12 +48,9 @@ class _ReadingPage2State extends State<ReadingPage2> {
       bookId = chunkModel.bookId;
     });
     double wordsPerMinute = settingsModel.getCurrentSliderValue;
-    print("word per min:+${wordsPerMinute}");
     double asMilisecond = ((60 / wordsPerMinute) * 1000);
     int asMillisecondsRounded = asMilisecond.round();
-
     List<String> words = chunkModel.getText.split(' ');
-    print("Milisecond:+${asMillisecondsRounded}");
 
     _timer =
         Timer.periodic(Duration(milliseconds: asMillisecondsRounded), (timer) {
@@ -121,48 +119,45 @@ class _ReadingPage2State extends State<ReadingPage2> {
 
   @override
   Widget build(BuildContext context) {
-    return (_dontShowImage)
-        ? Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              title: Text(widget.title,
-                  style: Theme.of(context).textTheme.displayMedium),
-              actions: [Switch(value: false, onChanged: (newValue) {})],
-            ),
-
-            body: Stack(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        title: Text(widget.title,
+            style: Theme.of(context).textTheme.displayMedium),
+      ),
+      body: (_dontShowImage)
+          ? Stack(
               children: [
-                (widget.dontShowPdf != true)
-                    ? Positioned(
-                        top: 20.0,
-                        right: 10.0,
-                        child: SizedBox(
-                          width: 50.0,
-                          height: 50.0,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PDFScreen(
-                                      pdfBytes: widget.pdfBytes! ),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    20.0), // Set border radius
-                              ),
+                if (widget.dontShowPdf != true)
+                  Positioned(
+                    top: 20.0,
+                    right: 10.0,
+                    child: SizedBox(
+                      width: 50.0,
+                      height: 50.0,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  PDFScreen(pdfBytes: widget.pdfBytes!),
                             ),
-                            child: const Center(
-                              child: Icon(Icons.menu_book_sharp),
-                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                20.0), // Set border radius
                           ),
                         ),
-                      )
-                    : Container(),
+                        child: const Center(
+                          child: Icon(Icons.menu_book_sharp),
+                        ),
+                      ),
+                    ),
+                  ),
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -172,9 +167,44 @@ class _ReadingPage2State extends State<ReadingPage2> {
                   ),
                 ),
               ],
+            )
+          : Stack(
+              children: [
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 18.0, right: 18.0, bottom: 185.0),
+                    child: context.read<ChunkModel>().getImage,
+                  ),
+                ),
+                Positioned.fill(
+                  child: GestureDetector(
+                    onTap: () {
+                      dontShowImage(context);
+                    },
+                    child: Container(
+                      color: Colors.transparent,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 80.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: Container(
+                    color: Colors.white.withOpacity(0.3),
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      context.read<ChunkModel>().getSummarizedText!,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                ),
+              ],
             ),
 
-            floatingActionButton: FloatingActionButton(
+      floatingActionButton: _dontShowImage
+          ? FloatingActionButton(
               onPressed: () {
                 _isRunning ? _stopReading(context) : _startReading(context);
               },
@@ -182,14 +212,9 @@ class _ReadingPage2State extends State<ReadingPage2> {
               child: _isRunning
                   ? const Icon(Icons.pause)
                   : const Icon(Icons.play_arrow),
-            ),
-            // This trailing comma makes auto-formatting nicer for build methods.
-          )
-        : GestureDetector(
-            onTap: () {
-              dontShowImage(context);
-            },
-            child: context.read<ChunkModel>().getImage,
-          );
+            )
+          : null,
+      // This trailing comma makes auto-formatting nicer for build methods.
+    );
   }
 }

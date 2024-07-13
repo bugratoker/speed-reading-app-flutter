@@ -28,8 +28,8 @@ class _LoginPageState extends State<LoginPage> {
   late final TextEditingController passwordController;
 
   void initializeControllers() {
-    emailController = TextEditingController()..addListener(controllerListener);
-    passwordController = TextEditingController()
+    emailController = TextEditingController(text: "bugratoker11@gmail.com")..addListener(controllerListener);
+    passwordController = TextEditingController(text: "ABETon1.")
       ..addListener(controllerListener);
   }
 

@@ -7,13 +7,14 @@ class ChunkModel extends ChangeNotifier {
   List<String> allPdfText;
   late List<String> textChunks;
   Image? image;
+  String? summarizedText;
   late String bookId;
   int chunkSize = 150;
   int currentPosition = 0;
   bool _disposed = false; // Flag to track if the model has been disposed
   Image? get getImage => image;
   String get getText => textChunks[currentPosition];
-
+  String? get getSummarizedText => summarizedText;
   ChunkModel(
       {required this.allPdfText,
       required this.currentPosition,
@@ -59,17 +60,20 @@ class ChunkModel extends ChangeNotifier {
     }
     if (!_disposed) {
       // Ensure not disposed before proceeding to change the image
-      if(getText.split(' ').length<150){return;}
+      if (getText.split(' ').length < 150) {
+        return;
+      }
       changeImage();
     }
   }
 
   void changeImage() async {
-    var base64image =
+    var response=
         await APIService.generateImage(textChunks[currentPosition]);
     if (_disposed) return; // Check if disposed before updating the UI
 
-    image = Image.memory(base64Decode(base64image));
+    image = Image.memory(base64Decode(response["image"]));
+    summarizedText = response["summarizedText"];
     if (!_disposed) {
       // Double-check in case the model was disposed during image processing
       notifyListeners();
